@@ -22,13 +22,23 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/public/**").permitAll() // public URLs
                 .antMatchers("/journal/**", "/user/**").authenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
                 .and()
-                .httpBasic();
-        http.csrf().disable();
+                .formLogin()
+                .loginPage("/login") // if you have a custom login page
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
+                .and()
+                .httpBasic(); // optional, remove if not using Postman or curl
+
+        http.csrf().disable(); // good for testing, not for production
     }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
