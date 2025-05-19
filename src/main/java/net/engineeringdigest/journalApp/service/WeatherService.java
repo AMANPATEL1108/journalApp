@@ -16,7 +16,7 @@ import javax.jws.soap.SOAPBinding;
 @Component
 public class WeatherService {
 
-    private static final String apiKey = "76f5146c4173acb0fac46e9463d2ad69";
+    private static final String apiKey = "";
 
     private static final String API = "http://api.weatherstack.com/current?access_key={apiKey}&query={city}";
 
