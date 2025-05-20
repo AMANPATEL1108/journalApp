@@ -2,7 +2,9 @@ package net.engineeringdigest.journalApp.service;
 
 
 import net.engineeringdigest.journalApp.api.response.WeatherResponse;
+import net.engineeringdigest.journalApp.cache.Appcache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,16 +18,21 @@ import javax.jws.soap.SOAPBinding;
 @Component
 public class WeatherService {
 
-    private static final String apiKey = "";
+    //here api key is from yml file for hide to github not commit and push thatv
+    @Value("${weather.api.key}")
+    private String apiKey;
 
     private static final String API = "http://api.weatherstack.com/current?access_key={apiKey}&query={city}";
 
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private Appcache appcache;
+
 
 //    public WeatherResponse getWeather(String city) {
-//        String finalAPI = API.replace("CITY", city).replace("API_KEY", apiKey);
+//        String finalAPI = appcahe.APP_CACHE.replace("CITY", city).replace("API_KEY", apiKey);
 //        ResponseEntity<WeatherResponse> response = restTemplate.exchange(finalAPI, HttpMethod.GET, null, WeatherResponse.class);
 //        WeatherResponse body = response.getBody();
 //        return body;
