@@ -26,14 +26,17 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+
     @Autowired
     private WeatherService weatherService;
+
 
     @Autowired
 //    private KafkaTemplate<String,SentimentData> kafkaTemplate;
 
 
     @PutMapping
+
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();

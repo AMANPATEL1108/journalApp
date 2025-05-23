@@ -28,6 +28,7 @@ public class JournalEntryController {
     private UserService userService;
 
 
+
     @GetMapping
     public ResponseEntity<?> getAllJournalEntriesOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

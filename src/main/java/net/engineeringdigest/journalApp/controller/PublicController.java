@@ -13,10 +13,12 @@ public class PublicController {
     private UserService userService;
 
 
+
     @GetMapping("/health-check")
     public String healthCheck() {
         return "OK";
     }
+
 
 
     @PostMapping("/create-user")

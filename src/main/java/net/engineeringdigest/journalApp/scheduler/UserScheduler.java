@@ -24,6 +24,7 @@ public class UserScheduler {
     private SentimentAnalysisService sentimentAnalysisService;
 
 
+
 //    @Scheduled(cron = "0 9 * * SUN")
 //    public void fetchUserandSendMail() {
 //
