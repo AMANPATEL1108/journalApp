@@ -1,8 +1,9 @@
 package net.engineeringdigest.journalApp.service;
 
 import lombok.extern.slf4j.Slf4j;
-import net.engineeringdigest.journalApp.Repository.UserRepository;
+import net.engineeringdigest.journalApp.controller.JournalEntryController;
 import net.engineeringdigest.journalApp.entity.User;
+import net.engineeringdigest.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,40 +17,37 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
-@Component
 @Slf4j
 public class UserService {
-
     @Autowired
     private UserRepository userRepository;
 
-    private static final PasswordEncoder passwordEncode = new BCryptPasswordEncoder();
-
-//    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-//after anotation that can not use to @Slf4j
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public boolean saveNewUser(User user) {
         try {
-            user.setPassword(passwordEncode.encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(Arrays.asList("USER"));
             userRepository.save(user);
             return true;
         } catch (Exception e) {
-            //here is print a log default
-            log.info("hahahahahahah");
+            log.error("hahahhahhahahahah");
+            log.warn("hahahhahhahahahah");
+            log.info("hahahhahhahahahah");
+            log.debug("hahahhahhahahahah");
+            log.trace("hahahhahhahahahah");
             return false;
         }
     }
 
-    public void saveUser(User user) {
+    public void saveAdmin(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("USER", "ADMIN"));
         userRepository.save(user);
     }
 
-    public void saveAdmin(User user) {
-        user.setPassword(passwordEncode.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER", "ADMIN"));
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
@@ -68,5 +66,4 @@ public class UserService {
     public User findByUserName(String userName) {
         return userRepository.findByUserName(userName);
     }
-
 }

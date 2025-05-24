@@ -1,8 +1,7 @@
 package net.engineeringdigest.journalApp.cache;
 
-
-import net.engineeringdigest.journalApp.Repository.ConfigJournalAppRepository;
-import net.engineeringdigest.journalApp.entity.ConfigjournalAppEntity;
+import net.engineeringdigest.journalApp.entity.ConfigJournalAppEntity;
+import net.engineeringdigest.journalApp.repository.ConfigJournalAppRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,19 +11,23 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class Appcache {
+public class AppCache {
+
+    public enum keys{
+        WEATHER_API;
+    }
 
     @Autowired
-    private ConfigJournalAppRepository configjourn;
+    private ConfigJournalAppRepository configJournalAppRepository;
 
-    private Map<String, String> APP_CACHE;
+    public Map<String, String> appCache;
 
     @PostConstruct
-    public void init() {
-        APP_CACHE = new HashMap<>();
-        List<ConfigjournalAppEntity> all = configjourn.findAll();
-        for (ConfigjournalAppEntity configjournalAppEntity : all) {
-            APP_CACHE.put(configjournalAppEntity.getKey(), configjournalAppEntity.getValue());
+    public void init(){
+        appCache = new HashMap<>();
+        List<ConfigJournalAppEntity> all = configJournalAppRepository.findAll();
+        for (ConfigJournalAppEntity configJournalAppEntity : all) {
+            appCache.put(configJournalAppEntity.getKey(), configJournalAppEntity.getValue());
         }
     }
 

@@ -1,61 +1,44 @@
 package net.engineeringdigest.journalApp.service;
 
-
 import net.engineeringdigest.journalApp.api.response.WeatherResponse;
-import net.engineeringdigest.journalApp.cache.Appcache;
+import net.engineeringdigest.journalApp.cache.AppCache;
+import net.engineeringdigest.journalApp.constants.Placeholders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.jws.soap.SOAPBinding;
-
-@Component
+@Service
 public class WeatherService {
-
-    //here api key is from yml file for hide to github not commit and push thatv
     @Value("${weather.api.key}")
     private String apiKey;
-
-    private static final String API = "http://api.weatherstack.com/current?access_key={apiKey}&query={city}";
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
-    private Appcache appcache;
+    private AppCache appCache;
 
+    @Autowired
+    private RedisService redisService;
 
-//    public WeatherResponse getWeather(String city) {
-//        String finalAPI = appcahe.APP_CACHE.replace("CITY", city).replace("API_KEY", apiKey);
-//        ResponseEntity<WeatherResponse> response = restTemplate.exchange(finalAPI, HttpMethod.GET, null, WeatherResponse.class);
-//        WeatherResponse body = response.getBody();
-//        return body;
-//    }
+    public WeatherResponse getWeather(String city) {
+        WeatherResponse weatherResponse = redisService.get("weather_of_" + city, WeatherResponse.class);
+        if (weatherResponse != null) {
+            return weatherResponse;
+        } else {
+            String finalAPI = appCache.appCache.get(AppCache.keys.WEATHER_API.toString()).replace(Placeholders.CITY, city).replace(Placeholders.API_KEY, apiKey);
+            ResponseEntity<WeatherResponse> response = restTemplate.exchange(finalAPI, HttpMethod.POST, null, WeatherResponse.class);
+            WeatherResponse body = response.getBody();
+            if (body != null) {
+                redisService.set("weather_of_" + city, body, 300l);
+            }
+            return body;
+        }
 
-    public WeatherResponse getWeather1(String city) {
-        String finalAPI = API.replace("CITY", city).replace("API_KEY", apiKey);
-
-//        String reqestBody = "{
-//        "userName":"aman", "password":"aman"
-//    }"'
-
-        //http header transfer
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Key", "value");
-
-        User user = (User) User.builder().username("aman1").password("aman1").build();
-//in this add afetr user to ser Http header set for set header
-        HttpEntity<User> httpEntity = new HttpEntity<>(user);
-
-        ResponseEntity<WeatherResponse> response = restTemplate.exchange(finalAPI, HttpMethod.POST, httpEntity, WeatherResponse.class);
-        WeatherResponse body = response.getBody();
-        return body;
     }
-
 }
+
